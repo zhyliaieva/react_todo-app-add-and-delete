@@ -2,9 +2,9 @@ import cn from 'classnames';
 
 type Prop = {
   isActive: boolean;
-}
+};
 
-export const TodoLoader: React.FC<Prop>= ({ isActive }) => {
+export const TodoLoader: React.FC<Prop> = ({ isActive }) => {
   return (
     <div
       data-cy="TodoLoader"

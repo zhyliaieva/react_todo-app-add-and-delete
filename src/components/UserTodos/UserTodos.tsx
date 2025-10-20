@@ -64,11 +64,12 @@ export const UserTodos: React.FC<UserTodosProp> = ({
     if (inputReference.current) {
       inputReference.current.focus();
     }
-  }, []);
+  });
 
   function addTodo(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
     setErrorMessage('');
+
     const trimmed = title.trim();
 
     if (!trimmed) {
@@ -86,7 +87,7 @@ export const UserTodos: React.FC<UserTodosProp> = ({
     setIsInputDisabled(true);
 
     const newTempTodo: Todo = {
-      id: 1,
+      id: 0,
       userId,
       title: trimmed,
       completed: false,
@@ -105,13 +106,9 @@ export const UserTodos: React.FC<UserTodosProp> = ({
         setTimeout(() => setIsErrorVisible(false), 3000);
       })
       .finally(() => {
-        //
-        if (inputReference.current) {
-          inputReference.current.focus();
-        }
-
         setIsInputDisabled(false);
         setTempTodo(null);
+        inputReference.current?.focus();
       });
   }
 
@@ -123,8 +120,8 @@ export const UserTodos: React.FC<UserTodosProp> = ({
     setProcessingIds(p => [...p, todoId]);
 
     deleteTodo(todoId)
-      .then(currentTodoId => {
-        setTodos(p_1 => p_1.filter(t => t.id !== currentTodoId));
+      .then(() => {
+        setTodos(p_1 => p_1.filter(t => t.id !== todoId));
       })
       .catch(() => {
         setErrorMessage('Unable to delete a todo');
@@ -133,6 +130,32 @@ export const UserTodos: React.FC<UserTodosProp> = ({
       .finally(() => {
         setProcessingIds(p_2 => p_2.filter(id_1 => id_1 !== todoId));
       });
+  }
+
+  async function onClearCompleted() {
+    const completed = todos.filter(t => t.completed);
+    const ids = completed.map(t => t.id);
+
+    setProcessingIds(prev => [...prev, ...ids]);
+
+    const promises = ids.map(id => deleteTodo(id));
+    const results = await Promise.allSettled(promises);
+    const succeededIds = results
+      .map((r, i) => (r.status === 'fulfilled' ? ids[i] : null))
+      .filter(Boolean);
+
+    setTodos(prev => prev.filter(t => !succeededIds.includes(t.id)));
+
+    const rejectedIds = results
+      .map((r, i) => (r.status === 'rejected' ? ids[i] : null))
+      .filter(Boolean);
+
+    if (rejectedIds.length > 0) {
+      setErrorMessage('Unable to delete a todo');
+      setIsErrorVisible(true);
+    }
+
+    setSelectedTodo(null);
   }
 
   return (
@@ -176,12 +199,7 @@ export const UserTodos: React.FC<UserTodosProp> = ({
             filter={filter}
             onChangeFilter={setFilter}
             canClearCompleted={todos.some(t => t.completed)}
-            onClearCompleted={() => {
-              setTodos(todos.filter(t => !t.completed));
-              if (selectedTodo?.completed) {
-                setSelectedTodo(null);
-              }
-            }}
+            onClearCompleted={onClearCompleted}
           />
         )}
         {/* DON'T use conditional rendering to hide the notification */}

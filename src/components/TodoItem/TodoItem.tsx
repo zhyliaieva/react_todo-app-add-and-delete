@@ -48,6 +48,6 @@ export const TodoItem = ({
     </button>
 
     {/* overlay will cover the todo while it is being deleted or updated */}
-    <TodoLoader isActive={isProcessed}/>
+    <TodoLoader isActive={isProcessed} />
   </div>
 );
