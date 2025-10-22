@@ -179,12 +179,12 @@ export const UserTodos: React.FC<UserTodosProp> = ({
             data-cy="NewTodoField"
             type="text"
             className="todoapp__new-todo"
+            placeholder="What needs to be done?"
           />
         </form>
       </header>
       <div className="box">
         {loading && <Loader />}
-        {todos.length === 0 && <p>There are no todos yet!</p>}
         {todos.length > 0 && (
           <TodosList
             todos={visibleTodos()}
