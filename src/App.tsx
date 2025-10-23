@@ -15,9 +15,7 @@ export const App: React.FC = () => {
     <div className="todoapp">
       <h1 className="todoapp__title">todos</h1>
 
-      <div className="todoapp__content">
-        <UserTodos userId={Number(userId)} />
-      </div>
+      <UserTodos userId={Number(userId)} />
     </div>
   );
 };

@@ -160,30 +160,31 @@ export const UserTodos: React.FC<UserTodosProp> = ({
 
   return (
     <>
-      <header className="todoapp__header">
-        {/* this button should have `active` class only if all todos are completed */}
-        <button
-          type="button"
-          className="todoapp__toggle-all"
-          data-cy="ToggleAllButton"
-        />
-
-        {/* Add a todo on form submit */}
-        <form onSubmit={addTodo}>
-          <input
-            ref={inputReference}
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            disabled={isInputDisabled}
-            name="title"
-            data-cy="NewTodoField"
-            type="text"
-            className="todoapp__new-todo"
-            placeholder="What needs to be done?"
+      <div className="todoapp__content">
+        <header className="todoapp__header">
+          {/* this button should have `active` class only if all todos are completed */}
+          <button
+            type="button"
+            className="todoapp__toggle-all"
+            data-cy="ToggleAllButton"
           />
-        </form>
-      </header>
-      <div className="box">
+
+          {/* Add a todo on form submit */}
+          <form onSubmit={addTodo}>
+            <input
+              ref={inputReference}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              disabled={isInputDisabled}
+              name="title"
+              data-cy="NewTodoField"
+              type="text"
+              className="todoapp__new-todo"
+              placeholder="What needs to be done?"
+            />
+          </form>
+        </header>
+
         {loading && <Loader />}
         {todos.length > 0 && (
           <TodosList
@@ -210,25 +211,26 @@ export const UserTodos: React.FC<UserTodosProp> = ({
             onClearCompleted={onClearCompleted}
           />
         )}
-        {/* DON'T use conditional rendering to hide the notification */}
-        {/* Add the 'hidden' class to hide the message smoothly */}
-        <div
-          className={
-            isErrorVisible
-              ? 'notification is-danger is-light has-text-weight-normal'
-              : 'notification is-danger is-light has-text-weight-normal hidden'
-          }
-          data-cy="ErrorNotification"
-        >
-          <button
-            data-cy="HideErrorButton"
-            type="button"
-            className="delete"
-            onClick={() => setIsErrorVisible(false)}
-          />
-          {errorMessage}
-          <br />
-        </div>
+      </div>
+
+      {/* DON'T use conditional rendering to hide the notification */}
+      {/* Add the 'hidden' class to hide the message smoothly */}
+      <div
+        className={
+          isErrorVisible
+            ? 'notification is-danger is-light has-text-weight-normal'
+            : 'notification is-danger is-light has-text-weight-normal hidden'
+        }
+        data-cy="ErrorNotification"
+      >
+        <button
+          data-cy="HideErrorButton"
+          type="button"
+          className="delete"
+          onClick={() => setIsErrorVisible(false)}
+        />
+        {errorMessage}
+        <br />
       </div>
     </>
   );
